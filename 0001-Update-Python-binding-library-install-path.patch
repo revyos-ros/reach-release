@@ -1,0 +1,52 @@
+From 74267c3803185820057fc7ab68bdff8d70e4046f Mon Sep 17 00:00:00 2001
+From: Michael Ripperger <michael.ripperger@swri.org>
+Date: Fri, 8 Sep 2023 10:20:08 -0500
+Subject: [PATCH] Update Python binding library install path
+
+---
+ package.xml               |  5 +----
+ src/python/CMakeLists.txt | 10 ++--------
+ 2 files changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/package.xml b/package.xml
+index f09009c..6f7aa61 100644
+--- a/package.xml
++++ b/package.xml
+@@ -8,7 +8,7 @@
+   <author email="michael.ripperger@swri.org">Michael Ripperger</author>
+   <maintainer email="michael.ripperger@swri.org">Michael Ripperger</maintainer>
+ 
+-  <buildtool_depend>cmake</buildtool_depend>
++  <buildtool_depend>catkin</buildtool_depend>
+ 
+   <depend>boost</depend>
+   <depend>eigen</depend>
+@@ -19,7 +19,4 @@
+   <depend>yaml-cpp</depend>
+   <test_depend>gtest</test_depend>
+ 
+-  <export>
+-    <build_type>cmake</build_type>
+-  </export>
+ </package>
+diff --git a/src/python/CMakeLists.txt b/src/python/CMakeLists.txt
+index 4d712cf..1462b1a 100644
+--- a/src/python/CMakeLists.txt
++++ b/src/python/CMakeLists.txt
+@@ -11,11 +11,5 @@ target_compile_definitions(${PROJECT_NAME}_python PRIVATE MODULE_NAME=${PROJECT_
+ set_target_properties(${PROJECT_NAME}_python PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+ target_cxx_version(${PROJECT_NAME}_python PUBLIC VERSION 14)
+ 
+-execute_process(
+-  COMMAND "${Python_EXECUTABLE}" -c "if True:
+-    from distutils import sysconfig as sc
+-    print(sc.get_python_lib(prefix='', plat_specific=True))"
+-  OUTPUT_VARIABLE PYTHON_SITE
+-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+-
+-install(TARGETS ${PROJECT_NAME}_python DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITE})
++find_package(catkin REQUIRED COMPONENTS cmake_modules)
++install(TARGETS ${PROJECT_NAME}_python DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION})
+-- 
+2.25.1
+
